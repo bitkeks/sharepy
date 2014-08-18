@@ -1,6 +1,6 @@
 # SharePy
 
-Flask webapplication to send uploaded files via token link.
+Flask webapplication usable to send uploaded files via token link.
 
 ## Installation
 
