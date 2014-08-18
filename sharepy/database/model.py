@@ -44,6 +44,22 @@ class User(Base):
     def verify_password(self, password):
         return verify_password(password, self.password)
 
+    def is_authenticated(self):
+        """Needed for flask-login"""
+        return True
+
+    def is_active(self):
+        """Needed for flask-login"""
+        return True
+
+    def is_anonymous(self):
+        """Needed for flask-login"""
+        return False
+
+    def get_id(self):
+        """Needed for flask-login"""
+        return self.id
+
 
 class File(Base):
     """A file in the storage, identified by its hash. Has one owner.

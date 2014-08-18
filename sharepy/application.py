@@ -6,22 +6,20 @@ SharePy - a webapplication to share files
 Created Aug 2014 by Dominik Pataky <dpa@netdecorator.org>
 """
 
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask
+from flask_login import LoginManager
+
+from sharepy.database import User
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 
+login_manager = LoginManager(app)
+login_manager.login_view = 'index'
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+@login_manager.user_loader
+def user_loader(userid):
+    return User.q.get(userid)
 
+import frontend
 
-@app.route('/about')
-def about():
-    return redirect(url_for('index'))
-
-
-@app.route('/my/uploads')
-def my_uploads():
-    return redirect(url_for('index'))
