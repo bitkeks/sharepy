@@ -8,7 +8,7 @@
             href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-<nav class="nav navbar-default navbar-fixed-top" role="navigation">
+<nav class="nav navbar-default" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse"
@@ -22,10 +22,13 @@
         </div>
 
         <div class="collapse navbar-collapse" id="navigation-bar">
+            {% if current_user.is_authenticated() %}
             <ul class="nav navbar-nav">
-                <li class="active"><a href="{{ url_for('index') }}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                <li class="active"><a href="{{ url_for('my_home') }}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                 <li><a href="{{ url_for('my_uploads') }}"><span class="glyphicon glyphicon-list-alt"></span> My Uploads</a></li>
+                <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
+            {% endif %}
 
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-info-sign"></span></a></li>
@@ -33,7 +36,25 @@
         </div>
     </div>
 </nav>
-{% block content %}{% endblock %}
+<div id="content" class="col-lg-10 col-lg-offset-1">
+    {% with msg = get_flashed_messages(with_categories=True) %}
+        {% if msg %}
+        <div id="flashmessages">
+            {% for c, m in msg %}
+            <div class="alert
+                {% if c == 'error' %}alert-danger
+                {% elif c != 'message' %}alert-{{ c }}
+                {% else %}alert-info{% endif %}">{{ m }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    {% if title %}<h2>{{ title }}</h2>{% endif %}
+
+    {% block content %}{% endblock %}
+</div>
 </body>
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
