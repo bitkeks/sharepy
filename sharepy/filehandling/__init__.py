@@ -12,6 +12,7 @@ All file handling related code:
 from collections import namedtuple
 import os
 from sharepy.config import FILES_UPLOADDIR, FILES_STORAGEDIR
+from sharepy.database import get_userfiles
 
 
 def check_permissions():
@@ -24,6 +25,10 @@ def check_permissions():
 
         if not (os.access(d, os.R_OK) and os.access(d, os.W_OK)):
             exit(u"Cannot use directory {}. Wrong permissions!".format(d))
+
+
+def check_storagefile_exist():
+    pass
 
 
 def create_useruploaddir(username):
