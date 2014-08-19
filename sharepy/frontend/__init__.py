@@ -12,6 +12,8 @@ from forms import LoginForm
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    """For now, the landing page is also the login page.
+    """
     if not current_user.is_anonymous():
         return redirect(url_for('my_home'))
 

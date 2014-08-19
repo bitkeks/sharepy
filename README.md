@@ -2,9 +2,10 @@
 
 Flask webapplication usable to send uploaded files via token link.
 
-## Installation
+## Running the app
 
-Set up a config.py file with a SECRET_KEY.
+Install requirements.txt with Pip: 'pip install -r requirements.txt' (if possible, use a virtualenv).
+Set up the config.py file with a new SECRET_KEY and set the correct paths.
 
 ## Uploading files
 
