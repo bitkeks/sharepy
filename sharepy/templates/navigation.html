@@ -1,0 +1,45 @@
+{% set navigation_bar = dict(
+        public = [
+            ('About', 'about')
+        ],
+        authenticated = [
+            ('Home', 'my_home'),
+            ('My uploads', 'my_uploads'),
+            ('Logout', 'logout')
+        ])
+-%}
+
+<nav class="nav navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#navigation-bar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('index') }}">SharePy</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navigation-bar">
+            {% if current_user.is_authenticated() %}
+            <ul class="nav navbar-nav">
+                {% for name, endpoint in navigation_bar.authenticated %}
+                <li{% if request.endpoint == endpoint %} class="active"{% endif %}>
+                    <a href="{{ url_for(endpoint) }}">{{ name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <ul class="nav navbar-nav navbar-right">
+                {% for name, endpoint in navigation_bar.public %}
+                <li{% if request.endpoint == endpoint %} class="active"{% endif %}>
+                    <a href="{{ url_for(endpoint) }}">{{ name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</nav>

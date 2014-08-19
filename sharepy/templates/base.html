@@ -8,34 +8,7 @@
             href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-<nav class="nav navbar-default" role="navigation">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target="#navigation-bar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{{ url_for('index') }}">SharePy</a>
-        </div>
-
-        <div class="collapse navbar-collapse" id="navigation-bar">
-            {% if current_user.is_authenticated() %}
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="{{ url_for('my_home') }}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                <li><a href="{{ url_for('my_uploads') }}"><span class="glyphicon glyphicon-list-alt"></span> My Uploads</a></li>
-                <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-            </ul>
-            {% endif %}
-
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-info-sign"></span></a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+{% include 'navigation.html' %}
 <div id="content" class="col-lg-10 col-lg-offset-1">
     {% with msg = get_flashed_messages(with_categories=True) %}
         {% if msg %}
