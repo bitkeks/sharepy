@@ -9,6 +9,7 @@ All file handling related code:
 * Removing files
 """
 
+from collections import namedtuple
 import os
 from sharepy.config import FILES_UPLOADDIR, FILES_STORAGEDIR
 
@@ -31,3 +32,17 @@ def create_useruploaddir(username):
     userdir = os.path.join(FILES_UPLOADDIR, username)
     if not os.path.exists(userdir):
         os.mkdir(userdir, 0700)
+
+
+def get_unregistered_files(username):
+    """Get all files from a users upload dir.
+    """
+    userdir = os.path.join(FILES_UPLOADDIR, username)
+    files = []
+    file_tuple = namedtuple('userfile', 'path name size')
+    for f in os.listdir(userdir):
+        file_path = os.path.join(userdir, f)
+        if os.path.isfile(file_path):
+            files.append(file_tuple(file_path, f, os.lstat(file_path).st_size))
+
+    return files

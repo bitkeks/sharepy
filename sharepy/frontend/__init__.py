@@ -7,6 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from sharepy.application import app
 from sharepy.database import User
+from sharepy.filehandling import get_unregistered_files
 from forms import LoginForm
 
 
@@ -55,4 +56,5 @@ def my_home():
 @app.route('/my/uploads')
 @login_required
 def my_uploads():
-    return redirect(url_for('my_home'))
+    unregistered = get_unregistered_files(current_user.login)
+    return render_template('my/uploads.html', unregistered_files=unregistered)
