@@ -59,3 +59,18 @@ def get_filesize_byte(username, filename):
     file_path = os.path.join(FILES_UPLOADDIR, username, filename)
     return os.lstat(file_path).st_size
 
+
+def get_registered_files(userid):
+    """Get all registered files from database. Convenience method.
+    """
+    return get_userfiles(userid)
+
+
+def register_file(username, filename, filehash):
+    """Register a file.
+    This means the uploaded file is moved into the storage and renamed
+    to its hashstring.
+    """
+    old_filepath = os.path.join(FILES_UPLOADDIR, username, filename)
+    new_filepath = os.path.join(FILES_STORAGEDIR, filehash)
+    os.rename(old_filepath, new_filepath)

@@ -6,8 +6,9 @@ from flask.ext.login import current_user, login_user, logout_user, login_require
 from sqlalchemy.orm.exc import NoResultFound
 
 from sharepy.application import app
-from sharepy.database import User
-from sharepy.filehandling import get_unregistered_files
+from sharepy.database import session, User, File
+from sharepy.filehandling import get_unregistered_files, get_registered_files, \
+    register_file, get_filesize_byte
 from forms import LoginForm
 
 
@@ -57,4 +58,24 @@ def my_home():
 @login_required
 def my_uploads():
     unregistered = get_unregistered_files(current_user.login)
-    return render_template('my/uploads.html', unregistered_files=unregistered)
+    registered = get_registered_files(current_user.id)
+    return render_template('my/uploads.html',
+                           unregistered_files=unregistered,
+                           registered_files=registered)
+
+
+@app.route('/my/register_file/')
+@app.route('/my/register_file/<string:filename>')
+@login_required
+def my_register_file(filename=None):
+    if filename:
+        try:
+            new_file = File(filename, current_user.id)
+            register_file(current_user.login, filename, new_file.hashstring)
+            session.add(new_file)
+            session.commit()
+        except OSError:
+            session.rollback()
+            flash(u"File '{}' not found in your upload dir.".format(filename),
+                  "error")
+    return redirect(url_for('my_uploads'))

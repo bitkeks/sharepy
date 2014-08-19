@@ -4,19 +4,47 @@
 {% block content %}
     {% if unregistered_files %}
         <h3>Unregistered files</h3>
+        Unregistered files are files you uploaded to your own user directory, but which were not yet
+        saved in the database. They do not have any saved metadata and cannot be shared. To share
+        a file from this list, click on 'Register file' next to the file you want to share.<br><br>
         <div class="row">
             <div class="col-lg-8">
-                <table class="table table-striped table-hover">
+                <table class="table table-bordered table-hover">
                     <thead>
                         <th>File</th>
-                        <th>Size in Bytes</th>
-                        <th>&nbsp;</th>
+                        <th>Size</th>
+                        <th>Actions</th>
                     </thead>
                     {% for file in unregistered_files %}
                     <tr>
                         <td>{{ file.name }}</td>
-                        <td>{{ file.size }}</td>
-                        <td>actions</td>
+                        <td>{{ file.size|filesizeformat }}</td>
+                        <td><a href="{{ url_for('my_register_file', filename=file.name) }}">Register file</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if registered_files %}
+        <div class="row">
+            <div class="col-lg-8">
+                <h3>Registered files</h3>
+                Registered files are uploaded files you added to the database. These files can be shared via link.<br><br>
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <th>File</th>
+                        <th>Size</th>
+                        <th>Registration date</th>
+                        <th>Actions</th>
+                    </thead>
+                    {% for file in registered_files %}
+                    <tr>
+                        <td>{{ file.name }}</td>
+                        <td>{{ file.size|filesizeformat }}</td>
+                        <td>{{ file.creation_date.strftime('%Y-%m-%d %H:%M:%S UTC') }}</td>
+                        <td>Remove / Create link</td>
                     </tr>
                     {% endfor %}
                 </table>
