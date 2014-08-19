@@ -17,6 +17,7 @@ from sqlalchemy.orm import relationship
 
 from database import Base
 from utils import hash_password, verify_password
+from sharepy.filehandling import create_useruploaddir
 
 
 class User(Base):
@@ -37,6 +38,9 @@ class User(Base):
         self.password = hash_password(password)
         self.email = email
         self.role_id = role_id
+
+        # If the user is created, create his upload dir
+        create_useruploaddir(login)
 
     def __repr__(self):
         return "<User '{}'>".format(self.login)

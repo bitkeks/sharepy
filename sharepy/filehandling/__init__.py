@@ -23,3 +23,11 @@ def check_permissions():
 
         if not (os.access(d, os.R_OK) and os.access(d, os.W_OK)):
             exit(u"Cannot use directory {}. Wrong permissions!".format(d))
+
+
+def create_useruploaddir(username):
+    """Create a users upload dir if it does not exist.
+    """
+    userdir = os.path.join(FILES_UPLOADDIR, username)
+    if not os.path.exists(userdir):
+        os.mkdir(userdir, 0700)
