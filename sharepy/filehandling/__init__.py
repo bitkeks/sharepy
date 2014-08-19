@@ -51,3 +51,11 @@ def get_unregistered_files(username):
             files.append(file_tuple(file_path, f, os.lstat(file_path).st_size))
 
     return files
+
+
+def get_filesize_byte(username, filename):
+    """Get the size of an uploaded file in bytes.
+    """
+    file_path = os.path.join(FILES_UPLOADDIR, username, filename)
+    return os.lstat(file_path).st_size
+

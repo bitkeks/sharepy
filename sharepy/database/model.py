@@ -73,6 +73,7 @@ class File(Base):
     name = Column(String, nullable=False)
     hashstring = Column(String, nullable=False, unique=True)
     creation_date = Column(DateTime, nullable=False)
+    size = Column(Integer, nullable=False)
     owner_id = Column(Integer, ForeignKey('user.id'), nullable=False)
 
     def __init__(self, name, owner_id):
@@ -80,6 +81,10 @@ class File(Base):
         self.hashstring = md5(name + str(time() + random())).hexdigest()[:12]
         self.creation_date = datetime.utcnow()
         self.owner_id = owner_id
+
+        # Get the file size as byte
+        from sharepy.filehandling import get_filesize_byte
+        self.size = get_filesize_byte(User.q.get(owner_id).login, name)
 
     def __repr__(self):
         return "<File {} ('{}') owned by '{}', created {}>".format(
