@@ -44,7 +44,10 @@
                         <td>{{ file.name }}</td>
                         <td>{{ file.size|filesizeformat }}</td>
                         <td>{{ file.creation_date.strftime('%Y-%m-%d %H:%M:%S UTC') }}</td>
-                        <td>Remove / Create link</td>
+                        <td>
+                            {% if file.is_valid() %}Remove / Create link
+                            {% else %}File removed{% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </table>

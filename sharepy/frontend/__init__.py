@@ -7,8 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from sharepy.application import app
 from sharepy.database import session, User, File
-from sharepy.filehandling import get_unregistered_files, get_registered_files, \
-    register_file, get_filesize_byte
+from sharepy.filehandling import get_unregistered_files, register_file
 from forms import LoginForm
 
 
@@ -67,7 +66,7 @@ def my_uploads():
 def my_register_file(filename=None):
     if filename:
         try:
-            new_file = File(filename, current_user.id)
+            new_file = File(filename, current_user)
             register_file(current_user.login, filename, new_file.hashstring)
             session.add(new_file)
             session.commit()

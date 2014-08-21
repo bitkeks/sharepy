@@ -9,6 +9,8 @@ for all users in the database.
 """
 
 from datetime import datetime
+from hashlib import sha256
+from os import urandom
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -73,23 +75,32 @@ class File(Base):
     size = Column(Integer, nullable=False)
     owner_id = Column(Integer, ForeignKey('user.id'), nullable=False)
 
-    def __init__(self, name, owner_id):
+    def __init__(self, name, user):
         self.name = name
+        self.hashstring = self.create_filehash(name)
         self.creation_date = datetime.utcnow()
-        self.owner_id = owner_id
-
-        # Create a hash as name for the new storage file
-        from sharepy.filehandling import create_filehash
-        self.hashstring = create_filehash(name)
+        self.owner_id = user.id
 
         # Get the size of the uploaded file
         from sharepy.filehandling import get_filesize_byte
-        self.size = get_filesize_byte(User.q.get(owner_id).login, name)
+        self.size = get_filesize_byte(user.login, name)
 
     def __repr__(self):
         return "<File {} ('{}') owned by '{}', created {}>".format(
             self.hashstring, self.name, User.q.get(self.owner_id).login,
             self.creation_date)
+
+    def create_filehash(self, filename):
+        """Create filehash for storage file (will replace the
+        original file name).
+        """
+        return sha256(filename.encode() + urandom(10)).hexdigest()
+
+    def is_valid(self):
+        """Check if a File exists as a file in the storage.
+        """
+        from sharepy.filehandling import check_storagefile_exist
+        return check_storagefile_exist(self.hashstring)
 
 
 class Role(Base):
