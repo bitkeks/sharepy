@@ -58,10 +58,7 @@ def my_home():
 @login_required
 def my_uploads():
     unregistered = get_unregistered_files(current_user.login)
-    registered = get_registered_files(current_user.id)
-    return render_template('my/uploads.html',
-                           unregistered_files=unregistered,
-                           registered_files=registered)
+    return render_template('my/uploads.html', unregistered_files=unregistered)
 
 
 @app.route('/my/register_file/')

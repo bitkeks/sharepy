@@ -27,7 +27,7 @@
         </div>
     {% endif %}
 
-    {% if registered_files %}
+    {% if current_user.files %}
         <div class="row">
             <div class="col-lg-8">
                 <h3>Registered files</h3>
@@ -39,7 +39,7 @@
                         <th>Registration date</th>
                         <th>Actions</th>
                     </thead>
-                    {% for file in registered_files %}
+                    {% for file in current_user.files %}
                     <tr>
                         <td>{{ file.name }}</td>
                         <td>{{ file.size|filesizeformat }}</td>

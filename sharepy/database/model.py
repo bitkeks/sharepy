@@ -9,9 +9,6 @@ for all users in the database.
 """
 
 from datetime import datetime
-from hashlib import md5
-from random import random
-from time import time
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -78,11 +75,14 @@ class File(Base):
 
     def __init__(self, name, owner_id):
         self.name = name
-        self.hashstring = md5(name + str(time() + random())).hexdigest()[:12]
         self.creation_date = datetime.utcnow()
         self.owner_id = owner_id
 
-        # Get the file size as byte
+        # Create a hash as name for the new storage file
+        from sharepy.filehandling import create_filehash
+        self.hashstring = create_filehash(name)
+
+        # Get the size of the uploaded file
         from sharepy.filehandling import get_filesize_byte
         self.size = get_filesize_byte(User.q.get(owner_id).login, name)
 

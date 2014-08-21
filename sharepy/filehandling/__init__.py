@@ -10,6 +10,7 @@ All file handling related code:
 """
 
 from collections import namedtuple
+from hashlib import md5
 import os
 from sharepy.config import FILES_UPLOADDIR, FILES_STORAGEDIR
 from sharepy.database import get_userfiles
@@ -29,6 +30,12 @@ def check_permissions():
 
 def check_storagefile_exist():
     pass
+
+
+def create_filehash(filename):
+    """Create filehash for storage file (will replace the original file name).
+    """
+    return md5(filename.encode() + os.urandom(10)).hexdigest()
 
 
 def create_useruploaddir(username):
