@@ -29,7 +29,7 @@ class User(Base):
     password = Column(String, nullable=False)
     email = Column(String, unique=True)
     role_id = Column(Integer, ForeignKey('role.id'), nullable=False)
-    files = relationship('File', uselist=False, backref='owner')
+    files = relationship('File', backref='owner')
 
     def __init__(self, login, name, password, email, role_id):
         self.login = login
