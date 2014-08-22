@@ -89,8 +89,7 @@ class File(Base):
 
     def __repr__(self):
         return "<File {} ('{}') owned by '{}', created {}>".format(
-            self.hashstring, self.name, User.q.get(self.owner_id).login,
-            self.creation_date)
+            self.hashstring, self.name, self.owner.login, self.creation_date)
 
     def create_filehash(self, filename):
         """Create filehash for storage file (will replace the
@@ -113,7 +112,7 @@ class FileToken(Base):
     """
     __tablename__ = 'filetoken'
     id = Column(Integer, primary_key=True)
-    hash = Column(String, nullable=False, unique=True)
+    identifier = Column(String, nullable=False, unique=True)
     file_id = Column(Integer, ForeignKey('file.id'), nullable=False)
     creation_date = Column(DateTime, nullable=False)
     valid = Column(Boolean, nullable=False)
@@ -121,12 +120,15 @@ class FileToken(Base):
     downloads_total = Column(Integer)
 
     def __init__(self, file_id, downloads_max=0):
-        self.hash = self.create_ident()
+        self.identifier = self.create_ident()
         self.file_id = file_id
         self.creation_date = datetime.utcnow()
         self.valid = True
         self.downloads_max = downloads_max
         self.downloads_total = 0
+
+    def __repr__(self):
+        return "<FileToken {} for {}>".format(self.identifier, self.file.name)
 
     def create_ident(self):
         """Create a symbol string as 'name' for the token (used in the link)

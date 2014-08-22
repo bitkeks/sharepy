@@ -1,11 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, send_file
 from flask.ext.login import current_user, login_user, logout_user, login_required
+from os import path
 from sqlalchemy.orm.exc import NoResultFound
 
 from sharepy.application import app
+from sharepy.config import FILES_STORAGEDIR
 from sharepy.database import session, User, File, FileToken
 from sharepy.filehandling import get_unregistered_files, register_file
 from forms import LoginForm
@@ -70,7 +72,7 @@ def my_register_file(filename=None):
             register_file(current_user.login, filename, new_file.hashstring)
             session.add(new_file)
             session.commit()
-            
+
             new_token = FileToken(new_file.id)
             session.add(new_token)
             session.commit()
@@ -79,3 +81,20 @@ def my_register_file(filename=None):
             flash(u"File '{}' not found in your upload dir.".format(filename),
                   "error")
     return redirect(url_for('my_uploads'))
+
+
+@app.route('/dl/<string:tokenstring>')
+@app.route('/dl/<string:tokenstring>/<string:filename>')
+def download_token(tokenstring, filename=None):
+    try:
+        token = FileToken.q.filter(FileToken.identifier == tokenstring).one()
+    except NoResultFound:
+        flash(u"Token is invalid!", "error")
+        return redirect(url_for('index'))
+
+    if not filename:
+        return redirect(url_for('download_token', tokenstring=tokenstring,
+                                filename=token.file.name))
+
+    return send_file(path.join(FILES_STORAGEDIR, token.file.hashstring),
+                     as_attachment=True, attachment_filename=token.file.name)
