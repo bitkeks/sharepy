@@ -1,5 +1,5 @@
 from database import session, database_init
-from model import User, File, Role
+from model import User, File, Role, FileToken
 
 
 def get_userfiles(userid):

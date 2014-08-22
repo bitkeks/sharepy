@@ -6,7 +6,7 @@ from flask.ext.login import current_user, login_user, logout_user, login_require
 from sqlalchemy.orm.exc import NoResultFound
 
 from sharepy.application import app
-from sharepy.database import session, User, File
+from sharepy.database import session, User, File, FileToken
 from sharepy.filehandling import get_unregistered_files, register_file
 from forms import LoginForm
 
@@ -69,6 +69,10 @@ def my_register_file(filename=None):
             new_file = File(filename, current_user)
             register_file(current_user.login, filename, new_file.hashstring)
             session.add(new_file)
+            session.commit()
+            
+            new_token = FileToken(new_file.id)
+            session.add(new_token)
             session.commit()
         except OSError:
             session.rollback()

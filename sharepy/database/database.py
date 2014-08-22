@@ -32,7 +32,7 @@ def database_init(_remove=False):
         remove('sharepy.db')
 
     print('Initialize database.')
-    from sharepy.database import File, User, Role
+    from sharepy.database import File, User, Role, FileToken
     Base.metadata.create_all(bind=engine)
 
     # Example data

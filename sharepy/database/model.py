@@ -11,7 +11,8 @@ for all users in the database.
 from datetime import datetime
 from hashlib import sha256
 from os import urandom
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from random import choice
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
 from database import Base
@@ -74,6 +75,7 @@ class File(Base):
     creation_date = Column(DateTime, nullable=False)
     size = Column(Integer, nullable=False)
     owner_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    tokens = relationship('FileToken', backref='file')
 
     def __init__(self, name, user):
         self.name = name
@@ -101,6 +103,38 @@ class File(Base):
         """
         from sharepy.filehandling import check_storagefile_exist
         return check_storagefile_exist(self.hashstring)
+
+
+class FileToken(Base):
+    """Token which can be shared and used to download files.
+
+    Valid: Bool for enabling/disabling the token
+    Downloads max/total: Set a maximum download limit, count the total dls
+    """
+    __tablename__ = 'filetoken'
+    id = Column(Integer, primary_key=True)
+    hash = Column(String, nullable=False, unique=True)
+    file_id = Column(Integer, ForeignKey('file.id'), nullable=False)
+    creation_date = Column(DateTime, nullable=False)
+    valid = Column(Boolean, nullable=False)
+    downloads_max = Column(Integer)
+    downloads_total = Column(Integer)
+
+    def __init__(self, file_id, downloads_max=0):
+        self.hash = self.create_ident()
+        self.file_id = file_id
+        self.creation_date = datetime.utcnow()
+        self.valid = True
+        self.downloads_max = downloads_max
+        self.downloads_total = 0
+
+    def create_ident(self):
+        """Create a symbol string as 'name' for the token (used in the link)
+        """
+        identifier = ''
+        for i in range(20):
+            identifier += choice('acemnorsuvwxz1234567890')
+        return identifier
 
 
 class Role(Base):
