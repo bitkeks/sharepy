@@ -15,3 +15,7 @@ html {
 .login-form {
     margin-top: 15%;
 }
+
+.uploads-filetoken-row {
+    display: none;
+}

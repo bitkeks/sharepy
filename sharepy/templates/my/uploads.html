@@ -40,18 +40,33 @@
                         <th>Actions</th>
                     </thead>
                     {% for file in current_user.files %}
-                    <tr>
-                        <td>{{ file.name }}</td>
-                        <td>{{ file.size|filesizeformat }}</td>
-                        <td>{{ file.creation_date.strftime('%Y-%m-%d %H:%M:%S UTC') }}</td>
-                        <td>
-                            {% if file.is_valid() %}Remove / Create link
-                            {% else %}File removed{% endif %}
-                        </td>
-                    </tr>
+                        <tr class="uploads-fileinfo-row">
+                            <td>{{ file.name }}</td>
+                            <td>{{ file.size|filesizeformat }}</td>
+                            <td>{{ file.creation_date.strftime('%Y-%m-%d %H:%M:%S UTC') }}</td>
+                            <td>
+                                {% if file.is_valid() %}ACTIONS
+                                {% else %}File removed{% endif %}
+                            </td>
+                        </tr>
+                        {% for token in file.tokens %}
+                            <tr class="uploads-filetoken-row">
+                                <td colspan="4">
+                                    Token <a href="{{ url_for('download_token', tokenstring=token.identifier, filename=file.name) }}">{{ token.identifier }}</a>, downloaded {{ token.downloads_total }} times.
+                                </td>
+                            </tr>
+                        {% endfor %}
                     {% endfor %}
                 </table>
             </div>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block page_scripts %}
+<script type="application/javascript">
+    $('tr.uploads-fileinfo-row').click(function() {
+        $(this).nextUntil('tr.uploads-fileinfo-row').fadeToggle('fast');
+    });
+</script>
 {% endblock %}
